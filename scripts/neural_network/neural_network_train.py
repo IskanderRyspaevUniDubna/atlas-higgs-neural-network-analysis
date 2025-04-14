@@ -1,11 +1,15 @@
+# Импорт основных библиотек
 import numpy as np
 import pandas as pd
 import tensorflow as tf
 
+# Импорт библиотеки sklearn для разбиения выборки на тренировочную/тестовую и препроцессинга входных данных
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import roc_curve, auc
 from sklearn.preprocessing import MinMaxScaler
 
+
+# Чтение текстового конфиг файла и возврат списка строк с именами переменных
 def read_txt_config(config_file_name, config_file_path):
     lines = []
     with open(str(config_file_path)+'/'+str(config_file_name)) as file:
@@ -13,6 +17,8 @@ def read_txt_config(config_file_name, config_file_path):
             lines.append(line.strip())
     return lines
 
+
+# Вычисление веса "адекватности" (то есть во сколько раз фон больше сигнала) при тренировке нейронной сети
 def calculate_normalized_weight_signal(w, y):
     w_signal = []
     w_background = []
@@ -25,6 +31,8 @@ def calculate_normalized_weight_signal(w, y):
     print("w_background", np.sum(w_background))
     return np.sum(w_background) / np.sum(w_signal)
 
+
+# Чтение данных из CSV файла для анализа
 data = pd.read_csv(
     filepath_or_buffer=(
         '/lustre/home/user/r/ryspaev/HOME/neural_network_analysis/IskanderRyspaevDiploma2025/'
@@ -32,6 +40,8 @@ data = pd.read_csv(
     )
 )
 
+
+# Извлечение матрицы X и нормализация данных с помощью MinMaxScaler в диапазоне [0, 1]
 scaler = MinMaxScaler()
 columns_to_extract_X = read_txt_config(
     'var_list.txt',
@@ -42,11 +52,15 @@ columns_to_extract_X = read_txt_config(
 )
 X = scaler.fit_transform(np.array(data.loc[:, columns_to_extract_X]))
 
+
+# Извлечение вектора y (метки классов: 1 - сигнал, 0 - фон) для обучения модели
 columns_to_extract_y = [
     'class_label'
 ]
 y = np.array(data.loc[:, columns_to_extract_y]).flatten()
 
+
+# Извлечение веса и применение веса "адекватности"
 columns_to_extract_Weight_Event = [
     'Weight_Event'
 ]
@@ -58,9 +72,11 @@ for i in range(len(w)):
     elif(y[i] == 0):
         w[i] = w[i]
 
-X_train, X_test, y_train, y_test, w_train, w_test = train_test_split(X, y, w, train_size=0.7, shuffle=True)
 
+# Деление на тренировочную и тестовую выборку = 70% тренировочной выборки и 30% тестовой выборки
+X_train, X_test, y_train, y_test, w_train, w_test = train_test_split(X, y, w, train_size=0.7, shuffle=True)
 #=====================================================================================================#
+# Тренировка модели 1
 print("model_1 train")
 model_1 = tf.keras.Sequential([
     tf.keras.Input(shape=(24,)),
@@ -92,11 +108,8 @@ history_1 = model_1.fit(
 model_1.save('keras_model_1.keras')
 #=====================================================================================================#
 
-
-
-
-
 #=====================================================================================================#
+# Тренировка модели 2
 print("model_2 train")
 model_2 = tf.keras.Sequential([
     tf.keras.Input(shape=(24,)),
@@ -128,10 +141,8 @@ history_2 = model_2.fit(
 model_2.save('keras_model_2.keras')
 #=====================================================================================================#
 
-
-
-
 #=====================================================================================================#
+# Тренировка модели 3
 print("model_3 train")
 model_3 = tf.keras.Sequential([
     tf.keras.Input(shape=(24,)),
