@@ -61,6 +61,7 @@ for i in range(len(w)):
 X_train, X_test, y_train, y_test, w_train, w_test = train_test_split(X, y, w, train_size=0.7, shuffle=True)
 
 #=====================================================================================================#
+print("model_1 train")
 model_1 = tf.keras.Sequential([
     tf.keras.Input(shape=(24,)),
     tf.keras.layers.Dense(150, activation='tanh', kernel_regularizer = tf.keras.regularizers.L1L2()),
@@ -96,6 +97,7 @@ model_1.save('keras_model_1.keras')
 
 
 #=====================================================================================================#
+print("model_2 train")
 model_2 = tf.keras.Sequential([
     tf.keras.Input(shape=(24,)),
     tf.keras.layers.Dense(160, activation='tanh', kernel_regularizer = tf.keras.regularizers.L1L2()),
@@ -130,6 +132,7 @@ model_2.save('keras_model_2.keras')
 
 
 #=====================================================================================================#
+print("model_3 train")
 model_3 = tf.keras.Sequential([
     tf.keras.Input(shape=(24,)),
     tf.keras.layers.Dense(150, activation='tanh', kernel_regularizer = tf.keras.regularizers.L1L2()),
