@@ -1,0 +1,7 @@
+weight_mc
+xsec_weight
+weight_jvt
+weight_pileup
+weight_leptonSF
+weight_bTagSF_DL1r_Continuous
+totalEventsWeighted
