@@ -16,7 +16,6 @@ def count_separation_power(signal_predictions, background_predictions, bins = np
     background_hist, _ = np.histogram(background_predictions, bins=bins, density=True)
     signal_hist /= np.sum(signal_hist)
     background_hist /= np.sum(background_hist)
-
     separation_power = 0
     for i in range(1, len(signal_hist) - 1):
         if signal_hist[i] == 0 and background_hist[i] == 0:
@@ -39,12 +38,11 @@ def plot_roc_cuirve(y_true, y_scores, w):
     plt.savefig('ROC_test.png')
 
     
-
 def count_signal_significance(signal_predictions, background_predictions, w_signal, w_background):
+    FONT_SIZE = 14
     bins = np.linspace(0, 1, 100)
     signal_hist, _ = np.histogram(signal_predictions, bins=bins, weights = w_signal)
     background_hist, _ = np.histogram(background_predictions, bins=bins, weights = w_background)
-
     signal_hist = signal_hist.astype(float)
     background_hist = background_hist.astype(float)
     IS_true = np.sum(signal_hist)
@@ -56,22 +54,23 @@ def count_signal_significance(signal_predictions, background_predictions, w_sign
         for j in range(0, i):
             Integral_signal += signal_hist[j]
             Integral_background += background_hist[j]
-
         S = IS_true - Integral_signal
         B = IS_false - Integral_background
-
         significance_value = (S / np.sqrt(S + B))
         if significance_value != 0 and not np.isnan(significance_value):
             Significance.append(significance_value)
         else:
             Significance.append(0)
-
-    # Визуализируем значимость
-    plt.figure(figsize=(10, 6))
     bins = np.linspace(0,1,99)
-    plt.plot(bins, Significance, label='Significance', color='green')
-    plt.title('Significance')
-    plt.legend()
+    plt.figure(figsize=(10, 6))
+    plt.step(bins, Significance, color='blue', label='tH vs all')
+    plt.axvline(x=bins[np.argmax(Significance)] - 0.005, color='r', linestyle='--', label=f'Best threshold = {(bins[np.argmax(Significance)] - 0.005):.3f}')
+    plt.axhline(y=np.max(Significance), color='r', linestyle='--', label='')
+    plt.xlabel('Neural network output', fontsize=FONT_SIZE)
+    plt.tick_params(axis='both', labelsize=FONT_SIZE)
+    plt.ylabel('Significance', fontsize=FONT_SIZE)
+    plt.plot(bins[np.argmax(Significance)] - 0.005, np.max(Significance), 'ko', label=f'Max = {(np.max(Significance)):.3f}')
+    plt.legend(loc='best', fontsize=FONT_SIZE, fancybox=False, edgecolor='black')
     plt.grid()
     plt.savefig('Significance.png')
     plt.close()
@@ -102,7 +101,7 @@ def plot_neural_network_output(signal_predictions, background_predictions, bins 
         fancybox = False, edgecolor = 'black'
     )
     plt.annotate(
-        f'Separation Power: {separation_power * 100:.2f}%\nSignal Significance: {significance * 100:.2f}%',
+        f'Separation Power: {separation_power * 100:.2f}%\nSignal Significance: {significance:.2f}%',
         xy = (0.28, 0.80), 
         xycoords = 'axes fraction',
         fontsize = FONT_SIZE,
