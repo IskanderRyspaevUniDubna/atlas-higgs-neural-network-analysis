@@ -63,7 +63,7 @@ def count_signal_significance(signal_predictions, background_predictions, w_sign
             Significance.append(0)
     bins = np.linspace(0,1,99)
     plt.figure(figsize=(10, 6))
-    plt.step(bins, Significance, color='blue', label='tH vs all')
+    plt.step(bins, Significance, color='blue', label='tH vs all background')
     plt.axvline(x=bins[np.argmax(Significance)] - 0.005, color='r', linestyle='--', label=f'Best threshold = {(bins[np.argmax(Significance)] - 0.005):.3f}')
     plt.axhline(y=np.max(Significance), color='r', linestyle='--', label='')
     plt.xlabel('Neural network output', fontsize=FONT_SIZE)
@@ -101,7 +101,7 @@ def plot_neural_network_output(signal_predictions, background_predictions, bins 
         fancybox = False, edgecolor = 'black'
     )
     plt.annotate(
-        f'Separation Power: {separation_power * 100:.2f}%\nSignal Significance: {significance:.2f}%',
+        f'Separation Power: {separation_power * 100:.2f}%\nSignal Significance: {significance:.3f}',
         xy = (0.28, 0.80), 
         xycoords = 'axes fraction',
         fontsize = FONT_SIZE,

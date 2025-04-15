@@ -60,7 +60,7 @@ X_train, X_test, y_train, y_test, w_train, w_test = train_test_split(X, y, w, tr
 model = tf.keras.models.load_model(
     (
         '/lustre/home/user/r/ryspaev/HOME/neural_network_analysis/IskanderRyspaevDiploma2025/'
-        'atlas-higgs-neural-network-analysis/data/keras_models/keras_model_3.keras'
+        'atlas-higgs-neural-network-analysis/data/keras_models/keras_model_1.keras'
     )
 )
 
